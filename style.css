@@ -6,39 +6,43 @@
     width: 512px;
     position: relative;
 }
-.todo{
-    height: 10px;
-    width: 10px;
-    background-color: red;
-}
 .img{
     position: absolute;
     pointer-events: none;
 }
 .tag{
-    height: 20px;
+    height: 30px;
     position: absolute;
     color: white;
-    /*display: flex;*/
-
+    display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
 }
 .reverse{
-    /*flex-direction: row-reverse;*/
-    right: 100%;
+    flex-direction: row-reverse;
 }
 .input{
     margin-left: 20%;
 }
 .text{
-    border-radius: 3px;
-    background-color: dimgray;
+    border-radius: 5px;
+    background-color: rgba(34,34,34,.75);
+    opacity: .9;
+    border: 1px solid #000;
+    padding: 5px;
+    flex-shrink: 0;
 }
 .remover{
-    border-radius: 3px;
-    background-color: dimgray;
+    border-radius: 5px;
+    background-color: rgba(34,34,34,.75);
+    opacity: .9;
+    border: 1px solid #000;
+    padding: 5px;
+    left: 100%;
+    flex-shrink: 0;
 }
 .hide{
-    display: none;
+    visibility: hidden;
 }
 .draggable{
     cursor: move;
