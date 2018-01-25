@@ -6,6 +6,13 @@
     width: 512px;
     position: relative;
 }
+.input{
+    margin-left: 20%;
+    height: 40px;
+    border: 1px solid #000;
+    background-color: aliceblue;
+    font-size: 16pt;
+}
 .img{
     position: absolute;
     pointer-events: none;
@@ -17,12 +24,6 @@
     display: flex;
     flex-wrap: nowrap;
     flex-shrink: 0;
-}
-.reverse{
-    flex-direction: row-reverse;
-}
-.input{
-    margin-left: 20%;
 }
 .text{
     border-radius: 5px;
@@ -46,4 +47,7 @@
 }
 .draggable{
     cursor: move;
+}
+.reverse{
+    flex-direction: row-reverse;
 }
