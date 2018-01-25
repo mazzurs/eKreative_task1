@@ -1,13 +1,11 @@
 .box{
     margin-top: 20px;
-    margin-left: 20%;
     border: solid black 1px;
     height: 512px;
     width: 512px;
     position: relative;
 }
 .input{
-    margin-left: 20%;
     height: 40px;
     border: 1px solid #000;
     background-color: aliceblue;
