@@ -1,25 +1,26 @@
-var box = document.getElementById('box');
-var input = document.getElementById('input');
-var boxCoordinates = box.getBoundingClientRect();
-var body = document.body;
+let box = document.getElementById('box');
+let input = document.getElementById('input');
+let boxCoordinates = box.getBoundingClientRect();
+let body = document.body;
+let tags = document.getElementById('tags');
 
 box.onclick = function () {
     if (input.value != '') {
-        var newDiv = document.createElement("div");
+        let newDiv = document.createElement("div");
         fillWithContent(newDiv);                            // fill the element with content (text and remover)
         newDiv.setAttribute('class', 'tag');
         newDiv.addEventListener('dblclick', changeState);
         newDiv.addEventListener('touchstart', changeState);
-        box.appendChild(newDiv);
+        tags.appendChild(newDiv);
         setCoordinates(newDiv);
         input.value = '';
     }
 };
 
 function setCoordinates(div) {
-    var coordinates = div.getBoundingClientRect();
-    var x = event.x - coordinates.left - coordinates.width / 2;
-    var y = event.y - coordinates.top - coordinates.height / 2;
+    let coordinates = div.getBoundingClientRect();
+    let x = event.x - coordinates.left - coordinates.width / 2;
+    let y = event.y - coordinates.top - coordinates.height / 2;
 
     if (y < boxCoordinates.top) {          // do not allow the installation of a tag outside the box
         y = 0;
@@ -45,14 +46,19 @@ function setCoordinates(div) {
 }
 
 function fillWithContent(div) {
-    var text = document.createElement("span");     // span for text
-    var remover = document.createElement("span");  // span for remover
+    let text = document.createElement("span");     // span for text
+    let remover = document.createElement("span");  // span for remover
 
     remover.setAttribute('class', 'remover');
     remover.classList.toggle('hide');              // hide remover
     remover.innerText = "X";
-    remover.addEventListener('click', remove);
-    remover.addEventListener('touchstart', remove);
+    if(onMobile()){
+        remover.addEventListener('touchstart', remove);
+    }else {
+        remover.addEventListener('click', remove);
+    }
+
+
 
     text.innerText = input.value;
     text.setAttribute('class', 'text');
@@ -67,23 +73,27 @@ function fillWithContent(div) {
 }
 
 function remove(event) {
-    event.currentTarget.parentNode.remove();
+        event.currentTarget.parentNode.remove();
 }
 
 function changeState(event) {
-    var tag = event.currentTarget;
-    var text = tag.getElementsByClassName('text')[0];
-    var remover = tag.getElementsByClassName('remover')[0];
+    let tag = event.currentTarget;
+    let siblings = getSiblings(tag);
+
+    let text = tag.getElementsByClassName('text')[0];
+    let remover = tag.getElementsByClassName('remover')[0];
 
     if (onMobile()) {
         event.currentTarget.ontouchend = function () {
             remover.classList.toggle('hide');
             if (tag.getAttribute('draggable') == 'false') {  // if the movement is forbidden
                 tag.setAttribute('draggable', 'true');
+                tag.style.zIndex = 10;
                 text.classList.toggle('draggable');    // cursor: move;
             }
             else {
                 tag.setAttribute('draggable', 'false');
+                tag.style.zIndex =5;
                 text.classList.toggle('draggable');    // cursor: move;
             }
         }
@@ -91,38 +101,41 @@ function changeState(event) {
         remover.classList.toggle('hide');
         if (tag.getAttribute('draggable') == 'false') {  // if the movement is forbidden
             tag.setAttribute('draggable', 'true');
+            tag.style.zIndex = 10;
             text.classList.toggle('draggable');    // cursor: move;
         }
         else {
             tag.setAttribute('draggable', 'false');
+            tag.style.zIndex =5;
             text.classList.toggle('draggable');    // cursor: move;
         }
     }
 
+    siblings.map((sibling)=>{
+        sibling.getElementsByClassName('remover')[0].className = 'remover hide';
+        sibling.setAttribute('draggable', 'false');
+        sibling.getElementsByClassName('text')[0].className='text';
+        sibling.style.zIndex =5;
+    });
 }
-
 
 function draggAndDrop(e) {
     e.preventDefault();
-    var tag = e.currentTarget.parentElement;
+    let tag = e.currentTarget.parentElement;
+    let tagCoordinates = tag.getElementsByClassName('text')[0].getBoundingClientRect();
+    let boxLeft = boxCoordinates.left;
+    let boxTop = boxCoordinates.top;
+    let boxBottom = boxCoordinates.bottom;
+    let boxRight = boxCoordinates.right;
+    let boxWidth = boxCoordinates.width;
+    let boxHeight = boxCoordinates.height;
 
+    let tagWidth = tagCoordinates.width;
+    let tagHeight = tagCoordinates.height;
 
-    var tagCoordinates = tag.getElementsByClassName('text')[0].getBoundingClientRect();
-
-
-    var boxLeft = boxCoordinates.left;
-    var boxTop = boxCoordinates.top;
-    var boxBottom = boxCoordinates.bottom;
-    var boxRight = boxCoordinates.right;
-    var boxWidth = boxCoordinates.width;
-    var boxHeight = boxCoordinates.height;
-
-    var tagWidth = tagCoordinates.width;
-    var tagHeight = tagCoordinates.height;
-
-    var x;
-    var y;
-    var touchobj;
+    let x;
+    let y;
+    let touchobj;
 
     if (tag.getAttribute('draggable') == 'true') {  // if the moving is allowed
 
@@ -142,7 +155,7 @@ function draggAndDrop(e) {
                     x = 0;
                 } else {
                     if (touchX + tagWidth / 2 > boxRight) {            // if the tag crosses the right bound
-                        x = boxWidth - tagWidth;
+                        x = boxWidth - tagWidth-1;
                     }
                 }
                 if (touchY > boxBottom - tagHeight / 2) {              // if the tag crosses the lower bound
@@ -153,7 +166,7 @@ function draggAndDrop(e) {
                     }
                 }
 
-                if (touchX + tag.getElementsByClassName('remover')[0].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
+                if (touchX + tag.getElementsByClassName('remover')[0].offsetWidth+1 + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
                     tag.className = "tag reverse";
                     x -= tag.getElementsByClassName('remover')[0].offsetWidth;
                 } else {
@@ -179,8 +192,8 @@ function draggAndDrop(e) {
                     if (event.pageX - tagWidth / 2 < boxLeft) {                 // if the tag crosses the left bound
                         x = 0;
                     } else {
-                        if (event.pageX + tagWidth / 2 > boxRight) {            // if the tag crosses the right bound
-                            x = boxWidth - tagWidth;
+                        if (event.pageX  + tagWidth / 2 > boxRight) {            // if the tag crosses the right bound
+                            x = boxWidth - tagWidth-1;
                         }
                     }
                     if (event.pageY > boxBottom - tagHeight / 2) {              // if the tag crosses the lower bound
@@ -191,7 +204,7 @@ function draggAndDrop(e) {
                         }
                     }
 
-                    if (event.pageX + tag.getElementsByClassName('remover')[0].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
+                    if (event.pageX + tag.getElementsByClassName('remover')[0].offsetWidth+1 + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
                         tag.className = "tag reverse";
                         x -= tag.getElementsByClassName('remover')[0].offsetWidth;
                     } else {
@@ -210,7 +223,23 @@ function draggAndDrop(e) {
     }
 }
 
-
 function onMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+function getSiblings(elem) {
+    let siblings = [];
+    let sibling = elem;
+    while (sibling.previousSibling) {
+        sibling = sibling.previousSibling;
+        sibling.nodeType == 1 && siblings.push(sibling);
+    }
+
+    sibling = elem;
+    while (sibling.nextSibling) {
+        sibling = sibling.nextSibling;
+        sibling.nodeType == 1 && siblings.push(sibling);
+    }
+
+    return siblings;
 }
