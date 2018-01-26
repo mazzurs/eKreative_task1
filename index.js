@@ -3,7 +3,7 @@ var input = document.getElementById('input');
 var boxCoordinates = box.getBoundingClientRect();
 var body = document.body;
 
-box.onclick = function (event) {
+box.onclick = function () {
     if (input.value != '') {
         var newDiv = document.createElement("div");
         fillWithContent(newDiv);                            // fill the element with content (text and remover)
@@ -72,8 +72,8 @@ function remove(event) {
 
 function changeState(event) {
     var tag = event.currentTarget;
-    var text = tag.children[0];
-    var remover = tag.children[1];
+    var text = tag.getElementsByClassName('text')[0];
+    var remover = tag.getElementsByClassName('remover')[0];
 
     if (onMobile()) {
         event.currentTarget.ontouchend = function () {
@@ -107,7 +107,7 @@ function draggAndDrop(e) {
     var tag = e.currentTarget.parentElement;
 
 
-    var tagCoordinates = tag.children[0].getBoundingClientRect();
+    var tagCoordinates = tag.getElementsByClassName('text')[0].getBoundingClientRect();
 
 
     var boxLeft = boxCoordinates.left;
@@ -132,7 +132,7 @@ function draggAndDrop(e) {
                 touchX = parseInt(touchobj.clientX);
                 touchY = parseInt(touchobj.clientY);
 
-                tagCoordinates = tag.children[0].getBoundingClientRect();
+                tagCoordinates = tag.getElementsByClassName('text')[0].getBoundingClientRect();
 
 
                 x = touchX - boxLeft - tagWidth / 2;
@@ -153,9 +153,9 @@ function draggAndDrop(e) {
                     }
                 }
 
-                if (touchX + tag.children[1].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
+                if (touchX + tag.getElementsByClassName('remover')[0].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
                     tag.className = "tag reverse";
-                    x -= tag.children[1].offsetWidth;
+                    x -= tag.getElementsByClassName('remover')[0].offsetWidth;
                 } else {
                     tag.className = 'tag';
                 }
@@ -170,7 +170,7 @@ function draggAndDrop(e) {
         } else {
             body.onmousemove = function (event) {
                 if (tag.getAttribute('draggable') == 'true') {
-                    tagCoordinates = tag.children[0].getBoundingClientRect();
+                    tagCoordinates = tag.getElementsByClassName('text')[0].getBoundingClientRect();
 
 
                     x = event.pageX - boxLeft - tagWidth / 2;
@@ -191,9 +191,9 @@ function draggAndDrop(e) {
                         }
                     }
 
-                    if (event.pageX + tag.children[1].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
+                    if (event.pageX + tag.getElementsByClassName('remover')[0].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
                         tag.className = "tag reverse";
-                        x -= tag.children[1].offsetWidth;
+                        x -= tag.getElementsByClassName('remover')[0].offsetWidth;
                     } else {
                         tag.className = 'tag';
                     }
@@ -212,9 +212,5 @@ function draggAndDrop(e) {
 
 
 function onMobile() {
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        return true;
-    } else {
-        return false;
-    }
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
