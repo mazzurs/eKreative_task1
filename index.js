@@ -154,10 +154,10 @@ function draggAndDrop(e) {
                 }
 
                 if (touchX + tag.children[1].offsetWidth + tagCoordinates.width / 2 > boxRight) {    // if too close to the right edge of the box
-                    tag.attributes[2].value = 'tag reverse';
+                    tag.className = "tag reverse";
                     x -= tag.children[1].offsetWidth;
                 } else {
-                    tag.attributes[2].value = 'tag';
+                    tag.className = 'tag';
                 }
 
                 tag.style.left = x + 'px';
