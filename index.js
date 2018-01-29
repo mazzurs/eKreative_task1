@@ -12,36 +12,33 @@ box.onmousedown = function (event) {
     newDiv.addEventListener('dblclick', changeState)
     newDiv.addEventListener('touchstart', changeState)
     tags.appendChild(newDiv)
-    setCoordinates(newDiv)
     input.value = ''
-  }
 
-  function setCoordinates (div) {
-    let coordinates = div.getBoundingClientRect()
-    let x = event.x - coordinates.left - coordinates.width / 2
-    let y = event.y - coordinates.top - coordinates.height / 2
+    let tagCoordinates = newDiv.getBoundingClientRect()
+    let x = event.x - tagCoordinates.left - tagCoordinates.width / 2
+    let y = event.y - tagCoordinates.top - tagCoordinates.height / 2
 
     if (y < boxCoordinates.top) {          // do not allow the installation of a tag outside the box
       y = 0
     } else {
-      if (y > boxCoordinates.bottom - boxCoordinates.top - coordinates.height) {
-        y = boxCoordinates.bottom - boxCoordinates.top - coordinates.height
+      if (y > boxCoordinates.bottom - boxCoordinates.top - tagCoordinates.height) {
+        y = boxCoordinates.bottom - boxCoordinates.top - tagCoordinates.height
       }
     }
     if (x < 0) {
       x = 0
     } else {
-      if (x + coordinates.width > boxCoordinates.width) {
-        x = boxCoordinates.width - coordinates.width
+      if (x + tagCoordinates.width > boxCoordinates.width) {
+        x = boxCoordinates.width - tagCoordinates.width
       }
     }
 
-    if (x + coordinates.width > boxCoordinates.width - div.children[1].offsetWidth) { // if too close to the right edge of the box
-      div.classList.toggle('reverse')
+    if (x + tagCoordinates.width > boxCoordinates.width - newDiv.children[1].offsetWidth) { // if too close to the right edge of the box
+      newDiv.classList.toggle('reverse')
     }
 
-    div.style.top = y + 'px'
-    div.style.left = x + 'px'
+    newDiv.style.top = y + 'px'
+    newDiv.style.left = x + 'px'
   }
 }
 

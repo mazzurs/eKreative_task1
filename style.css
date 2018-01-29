@@ -6,6 +6,7 @@
     position: relative;
 }
 .input{
+    width: 512px;
     height: 40px;
     border: 1px solid #000;
     background-color: aliceblue;
